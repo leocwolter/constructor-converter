@@ -20,6 +20,7 @@ public class ConstructorConverter implements Converter {
 
     public ConstructorConverter(Class<?> type, Constructor<?> declaredConstructor, String[] fieldNames) {
         this.type = type;
+        declaredConstructor.setAccessible(true);
         this.declaredConstructor = declaredConstructor;
         this.names = Arrays.asList(fieldNames);
     }
