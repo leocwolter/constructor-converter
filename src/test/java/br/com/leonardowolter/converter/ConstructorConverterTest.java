@@ -22,22 +22,23 @@ public class ConstructorConverterTest {
         private final Calendar date;
         private final String buyer;
 
-        public Order(String id, List<Product> products, Calendar date, String buyer) {
+        
+        protected Order(String id, List<Product> products, Calendar date, String buyer) {
             this.id = id;
             this.products = products;
             this.date = date;
             this.buyer = buyer;
         }
         
-        public Order(Calendar date) {
+        protected Order(Calendar date) {
             this(null, null, date, null);
         }
         
-        public Order(List<Product> products) {
+        protected Order(List<Product> products) {
         	this(null, products, null, null);
         }
         
-        public Order(String id) {
+        protected Order(String id) {
             this(id, null, null, null);
         }
 
@@ -47,12 +48,12 @@ public class ConstructorConverterTest {
         private final String name;
 		private final User user;
 
-        public Product(String name) {
+		protected Product(String name) {
 			this.name = name;
 			this.user = null;
         }
         
-        public Product(User user) {
+		protected Product(User user) {
         	this.name = null;
 			this.user = user;
         }
@@ -61,7 +62,7 @@ public class ConstructorConverterTest {
     public static class User {
     	private final String name;
     	
-    	public User(String name) {
+    	protected User(String name) {
     		this.name = name;
     	}
     }
