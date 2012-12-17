@@ -1,4 +1,4 @@
-package br.com.leonardowolter.converter;
+package com.thoughtworks.xstream.converters.reflection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -17,28 +17,30 @@ public class ConstructorConverter implements Converter {
     private final Class<?> type;
     private final Constructor<?> declaredConstructor;
     private final List<String> names;
+    private final Converter marshaller;
 
-    public ConstructorConverter(Class<?> type, Constructor<?> declaredConstructor, String[] fieldNames) {
+    public ConstructorConverter(Class<?> type, Constructor<?> declaredConstructor, String[] fieldNames, Converter marshaller) {
         this.type = type;
+        this.marshaller = marshaller;
         declaredConstructor.setAccessible(true);
         this.declaredConstructor = declaredConstructor;
         this.names = Arrays.asList(fieldNames);
     }
 
-    @Override
     @SuppressWarnings("rawtypes") 
     public boolean canConvert(Class type) {
         return this.type.equals(type);
     }
 
-    @Override
-    public void marshal(Object arg0, HierarchicalStreamWriter arg1, MarshallingContext arg2) {
-        throw new UnsupportedOperationException("");
+    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+        if (marshaller == null)
+            throw new UnsupportedOperationException("");
+        else
+            marshaller.marshal(source, writer, context);
     }
 
-    @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-    	Object[] constructorParameters = new Object[names.size()];
+        Object[] constructorParameters = new Object[names.size()];
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             String nodeName = reader.getNodeName();
