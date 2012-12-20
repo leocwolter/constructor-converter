@@ -152,7 +152,7 @@ public class ConstructorConverterTest extends TestCase {
     public void testShouldUseParanamerToDiscoverParameters() {
         ConstructorConverter converter = new ConstructorConverterBuilder(ParanamerUser.class).withParanamer().build();
         xStream.registerConverter(converter);
-        String xml = "<paranameruser><strangeArgName>with paranamer</name></strangeArgName>";
+        String xml = "<paranameruser><strangeArgName>with paranamer</strangeArgName></paranameruser>";
         ParanamerUser user = (ParanamerUser) xStream.fromXML(xml);
         assertEquals("with paranamer", user.name);
     }

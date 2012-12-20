@@ -14,7 +14,6 @@ public class ParanamerParserTest extends TestCase {
 
     public void testShouldFindParameters() throws Exception {
         Constructor<?> c = SampleClass.class.getDeclaredConstructors()[0];
-        System.out.println(c);
         String[] paramsFor = new ParanamerParser().paramsFor(c);
         assertEquals(2, paramsFor.length);
     }
