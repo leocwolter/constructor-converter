@@ -1,6 +1,8 @@
 package com.thoughtworks.xstream.converters.reflection;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,17 +49,26 @@ public class ConstructorConverterBuilder {
         for (Constructor<?> constructor : constructors) {
             if (constructor.isAnnotationPresent(UseThis.class)) {
                 try {
-                    ParanamerParser parser = (ParanamerParser) Class.forName("com.thoughtworks.xstream.converters.reflection.ParanamerParser").newInstance();
-                    names = parser.paramsFor(constructor);
-                    declaredConstructor = constructor;
+                    Class<?> paranamerClass = Class.forName("com.thoughtworks.xstream.converters.reflection.ParanamerParser");
+                    Method paramsFor = paranamerClass.getMethod("paramsFor", Constructor.class);
+					names = (String[]) paramsFor.invoke(paranamerClass.newInstance(), constructor);
+					declaredConstructor = constructor;
                     return this;
+                } catch (IllegalArgumentException e) {
+                	throw new RuntimeException("could not use paranamer", e);
+                } catch (InvocationTargetException e) {
+                	throw new RuntimeException("could not use paranamer",e);
                 } catch (InstantiationException e) {
-                    throw new RuntimeException("could not use paranamer", e);
+                	throw new RuntimeException("could not use paranamer", e);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException("could not use paranamer",e);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException("could not use paranamer",e);
-                }
+                } catch (NoSuchMethodException e) {
+                	throw new RuntimeException("could not use paranamer",e);
+				} catch (SecurityException e) {
+					throw new RuntimeException("could not use paranamer",e);
+				}
             }
         }
         throw new UnsupportedOperationException("could not find annotated constructor");
