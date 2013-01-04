@@ -66,12 +66,12 @@
 <p>The method <code>build()</code> will return a new Converter:</p>
 <div class="Source Java"><pre>
 
-        Converter orderConverter = new ConstructorConverterBuilder(Order.class)
+        ConstructorConverter orderConverter = new ConstructorConverterBuilder(Order.class)
             .withConstructor(String.class, List.class, String.class)
             .withAliases("id", "products", "buyer")
             .build();
             
-        Converter productConverter = new ConstructorConverterBuilder(Product.class)
+        ConstructorConverter productConverter = new ConstructorConverterBuilder(Product.class)
             .withConstructor(String.class)
             .withAliases("name")
             .build();
@@ -88,8 +88,7 @@
 <!-- ...................................................... -->
 <h2 id="AnnotationsWay">Using annotations</h2>
 <p>
-It is possible to use the converter by annotating the constructor you want to XStream use when unmarshal the xml data. To do this, simply annotate
-the desired constructor with @UseThis annotation.
+It is possible to use the converter by annotating the constructor you want to XStream use when unmarshal the xml data. To do this, simply annotate the desired constructor with @UseThis annotation.
 </p>
 <p>
 Consider the following xml file:
@@ -175,7 +174,9 @@ xstream.registerConverter(converter);
 </pre></div>
 </p>
 
+
 </body>
+
 <style>
 /*
  Copyright (C) 2005, 2006 Joe Walnes.
