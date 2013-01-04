@@ -11,45 +11,78 @@
  Created on 04. January 2013 by Chico Sokol & Leonardo Wolter
  -->
   <head>
-    <title>Constructor Converter Tutorial</title>
+	<title>Constructor Converter Tutorial</title>
   </head>
   <body>
 
 <!-- ...................................................... -->
 <h2 id="Motivation">Motivation</h2>
-<p>Sometimes you need to gather only a few informations of the xml file and ignore others</p>
-<p>This tutorial will show you how to use the ConstructorConverter class to do it easily with a fluent syntax.</p>
-<div class="Source Java"><pre>package com.thoughtworks.xstream;
-package com.thoughtworks.xstream;
-public class RendezvousMessage {
-
-	private int messageType;
-	
-	public RendezvousMessage(int messageType) {
-		this.messageType = messageType;
-	}
-	
-}</pre></div>
-<p>Let's code the XStream calls which generate the XML file:</p>
+<p>Sometimes you need do gather only a few informations from the xml file, which is very extense, and ignore the ones that you do not need</p>
+<p>The xStream have a ConstructorConverter class that makes possible to inform the nodes that you want to gather and inject them into your class's CONSTRUCTOR</p>
+<p>This tutorial will show you how to use that feature to do it easily using a very succint and fluent syntax.</p>
+<p>There are three ways for doing this operation, which will be explained bellow</p>
+<!-- ...................................................... -->
+<h2 id="ProgramaticWay">The Programatic Way</h2>
+<p>The first way to be explained will be the programatic way:</p>
+<p>Suppose that you have the following xml/classes and want to get all the informations but the <code>useless</code> one</p>
 <div class="Source Java"><pre>
-package com.thoughtworks.xstream;
-public class Tutorial {
+	&lt;order&gt;
+		&lt;products&gt;
+			&lt;product&gt;
+				&lt;name&gt;first product&lt;/name&gt;
+			&lt;/product&gt;
+			&lt;product&gt;
+				&lt;name&gt;second product&lt;/name&gt;
+			&lt;/product&gt;
+		&lt;/products&gt;
+		&lt;buyer&gt;buyer name&lt;/buyer&gt;
+		&lt;useless&gt;something&lt;/useless&gt;
+	&lt;/order&gt;
+</pre></div>
+<div class="Source Java"><pre>
+	 private static class Order {
 
-	public static void main(String[] args) {
-		XStream stream = new XStream();
-		RendezvousMessage msg = new RendezvousMessage(15);
-		System.out.println(stream.toXML(msg));
+		private final List&lt;Product&gt; products;
+		private final String buyer;
+
+		protected Order(List&lt;Product&gt; products, String buyer) {
+			this.products = products;
+			this.buyer = buyer;
+		}
 	}
 
-}
-</pre></div>
-<p>Results in the following XML:</p>
-<div class="Source Java"><pre>
-&lt;com.thoughtworks.xstream.RendezvousMessage&gt;
-  &lt;messageType&gt;15&lt;/messageType&gt;
-&lt;/com.thoughtworks.xstream.RendezvousMessage&gt;
+	public static class Product {
+		private final String name;
+\
+		protected Product(String name) {
+			this.name = name;
+		}
+	}
 </pre></div>
 
+<p>Now, to make a constructor converter we need to use the class ConstructorConverterBuilder informing the constructor that it'll use and the aliases to each xml nodes wanted <strong>IN THE SAME ORDER THAT YOUR CONSTRUCTOR'S PARAMETERS</strong></p>
+<p>The method build() will return a new Converter:</p>
+<div class="Source Java"><pre>
+
+        Converter orderConverter = new ConstructorConverterBuilder(Order.class)
+            .withConstructor(String.class, List.class, String.class)
+            .withAliases("id", "products", "buyer")
+            .build();
+            
+        Converter productConverter = new ConstructorConverterBuilder(Product.class)
+            .withConstructor(String.class)
+            .withAliases("name")
+            .build();
+
+</pre></div>
+<p>Note: while using this way, all the three method calls cited above are necessary</p>
+<p>All that you need to do now is to register these converters and call the xStream.fromXML(xml) method normally:</p>
+<div class="Source Java"><pre>
+	   	xStream.registerConverter(orderConverter);
+        xStream.registerConverter(productConverter);
+        Order order = (Order) xStream.fromXML(xml);
+</pre></div>
+<p>The result will be an instance of Order with all the xml information that were necessary</p>
 <!-- ...................................................... -->
 <h2 id="Aliasing">Aliasing Annotation</h2>
 <p>The most basic annotation is the one responsible for type and field aliasing: @XStreamAlias.  Let's annotate both
@@ -122,10 +155,10 @@ class RendezvousMessage {
 &lt;message&gt;
   &lt;type&gt;15&lt;/type&gt;
   &lt;content class="java.util.Arrays$ArrayList"&gt;
-    &lt;a class="string-array"&gt;
-      &lt;string&gt;firstPart&lt;/string&gt;
-      &lt;string&gt;secondPart&lt;/string&gt;
-    &lt;/a&gt;
+	&lt;a class="string-array"&gt;
+	  &lt;string&gt;firstPart&lt;/string&gt;
+	  &lt;string&gt;secondPart&lt;/string&gt;
+	&lt;/a&gt;
   &lt;/content&gt;
 &lt;/message&gt;
 </pre></div>
@@ -152,8 +185,8 @@ class RendezvousMessage {
 &lt;message&gt;
   &lt;type&gt;15&lt;/type&gt;
   &lt;a class="string-array"&gt;
-    &lt;string&gt;firstPart&lt;/string&gt;
-    &lt;string&gt;secondPart&lt;/string&gt;
+	&lt;string&gt;firstPart&lt;/string&gt;
+	&lt;string&gt;secondPart&lt;/string&gt;
   &lt;/a&gt;
 &lt;/message&gt;
 </pre></div>
@@ -223,8 +256,8 @@ class RendezvousMessage {
   &lt;part&gt;secondPart&lt;/part&gt;
   &lt;important&gt;false&lt;/important&gt;
   &lt;created&gt;
-    &lt;time&gt;1154097812245&lt;/time&gt;
-    &lt;timezone&gt;America/Sao_Paulo&lt;/timezone&gt;
+	&lt;time&gt;1154097812245&lt;/time&gt;
+	&lt;timezone&gt;America/Sao_Paulo&lt;/timezone&gt;
   &lt;/created&gt;
 &lt;/message&gt;
 </pre></div>
@@ -256,22 +289,22 @@ class RendezvousMessage {
 <div class="Source Java"><pre>
 public class SingleValueCalendarConverter implements Converter {
 
-    public void marshal(Object source, HierarchicalStreamWriter writer,
-            MarshallingContext context) {
-        Calendar calendar = (Calendar) source;
-        writer.setValue(String.valueOf(calendar.getTime().getTime()));
-    }
+	public void marshal(Object source, HierarchicalStreamWriter writer,
+			MarshallingContext context) {
+		Calendar calendar = (Calendar) source;
+		writer.setValue(String.valueOf(calendar.getTime().getTime()));
+	}
 
-    public Object unmarshal(HierarchicalStreamReader reader,
-            UnmarshallingContext context) {
-        GregorianCalendar calendar = new GregorianCalendar();
-        calendar.setTime(new Date(Long.parseLong(reader.getValue())));
-        return calendar;
-    }
+	public Object unmarshal(HierarchicalStreamReader reader,
+			UnmarshallingContext context) {
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTime(new Date(Long.parseLong(reader.getValue())));
+		return calendar;
+	}
 
-    public boolean canConvert(Class type) {
-        return type.equals(GregorianCalendar.class);
-    }
+	public boolean canConvert(Class type) {
+		return type.equals(GregorianCalendar.class);
+	}
 }
 </pre></div>
 <p>And we end up with the converter being used and generating the following XML:</p>
@@ -345,13 +378,13 @@ annotation.  The sequence of the arguments is only important for same types.  As
 class RendezvousMessage {
 
 	@XStreamAlias("type")
-   	@XStreamAsAttribute
+	@XStreamAsAttribute
 	private int messageType;
 
 	@XStreamImplicit(itemFieldName="part")
 	private List&lt;String&gt; content;
 	
-   	@XStreamAsAttribute
+	@XStreamAsAttribute
 	@XStreamConverter(value=BooleanConverter.class, booleans={false}, strings={"yes", "no"})
 	private boolean important;
 
@@ -440,7 +473,7 @@ the 'messageType', since we are only interested at the content. This is easy usi
 @XStreamAlias("message")
 class RendezvousMessage {
 
-   	@XStreamOmitField
+	@XStreamOmitField
 	private int messageType;
 
 	@XStreamImplicit(itemFieldName="part")
