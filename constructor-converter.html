@@ -533,25 +533,27 @@ the desired constructor with @UseThis annotation.
 <p>
 Consider the following xml file:
 </p>
-<div class="Source Java"><pre><user>
-    <id>1</id>
-    <user-name>Francisco Sokol</user-name>
-    <user-age>51</user-age>
-</user></pre></div>
+<div class="Source Java"><pre>
+&lt;user&gt;
+    &lt;id&gt;1&lt;/id&gt;
+    &lt;user-name&gt;Francisco Sokol&lt;/user-name&gt;
+    &lt;user-age&gt;51&lt;/user-age&gt;
+&lt;/user&gt;
+</pre></div>
 <p>
 And you need to map that xml to the following class:
 </p>
 <div class="Source Java"><pre>
-    public class AnnotatedUser {
-        private final String name;
-        private final int age;
-        
-        @UseThis({"user-name", "user-age"})
-        protected AnnotatedUser(String name, int age) {
-            this.name = name;
-            this.age = age;
-        }
+public class AnnotatedUser {
+    private final String name;
+    private final int age;
+    
+    @UseThis({"user-name", "user-age"})
+    protected AnnotatedUser(String name, int age) {
+        this.name = name;
+        this.age = age;
     }
+}
 </pre></div>
 <p>
 By annotating the constructor with <em>@UseThis({"user-name", "user-age"})</em>, the converter will use that constructor and map the cell named <em>user-name</em> 
@@ -576,15 +578,37 @@ If you have <a href="http://paranamer.codehaus.org/">Paranamer</a> added in the 
 <p>
 Consider the following xml file, similar to the previous example:
 </p>
-<div class="Source Java"><pre><user>
-    <id>1</id>
-    <name>Francisco Sokol</user-name>
-    <age>51</age>
-</user></pre></div>
+<div class="Source Java"><pre>
+&lt;user&gt;
+    &lt;id&gt;1&lt;/id&gt;
+    &lt;name&gt;Francisco Sokol&lt;/user-name&gt;
+    &lt;age&gt;51&lt;/age&gt;
+&lt;/user&gt;
+</pre></div>
 <p>
 <p>
-By using Paranamer, you can 
+By using Paranamer, you can omit the parameter of the @UseThis annotation and the converter will use parameters names to find out which cells from the xml to use.
+So you only need to annotate the constructor, like this: 
 </p>
-
+<div class="Source Java"><pre>
+public class ParanamerUser {
+    private final String name;
+    private final int age;
+    
+    @UseThis
+    protected ParanamerUser(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+</pre></div>
+<p>
+Now, with Paranamer jar in the claspath, you can build the converter:
+</p>
+<div class="Source Java"><pre>
+xstream.alias("user", ParanamerUser.class);
+ConstructorConverter converter = new ConstructorConverterBuilder(ParanamerUser.class).withParanamer().build();
+xstream.registerConverter(converter);
+</pre></div>
   </body>
 </html>
