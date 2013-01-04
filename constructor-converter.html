@@ -17,6 +17,7 @@
 
 <!-- ...................................................... -->
 <h2 id="Motivation">Motivation</h2>
+
 <p>Sometimes you need only a few pieces of information fom a lengthy XML file.</p>
 <p>Using ConstructorConverter, you inform the nodes that you want to use and inject them into your class's CONSTRUCTOR.</p>
 <p>This tutorial will show you how to use that feature to do it easily with a very succint and fluent syntax.</p>
@@ -61,8 +62,13 @@
 	}
 </pre></div>
 
+<<<<<<< HEAD
 <p>Now, to build a constructor converter we need to use the class ConstructorConverterBuilder and inform which constructor it will use and the aliases to each xml nodes wanted <strong>IN THE SAME ORDER THAT YOUR CONSTRUCTOR'S PARAMETERS</strong>.</p>
 <p>The method <code>build()</code> will return a new Converter:</p>
+=======
+<p>Now, to make a constructor converter we need to use the class ConstructorConverterBuilder informing the constructor that it'll use and the aliases to each xml nodes wanted <strong>in the same order as the parameters of your constructor</strong></p>
+<p>The method build() will return a new Converter:</p>
+>>>>>>> other details
 <div class="Source Java"><pre>
 
         Converter orderConverter = new ConstructorConverterBuilder(Order.class)
@@ -125,14 +131,12 @@ from the xml to the <em>name</em> parameter of the constructor and <em>user-age<
 <p>
 	And to build the converter simply do:
 </p>
-
+0
 <div class="Source Java"><pre>
 xstream.alias("user", AnnotatedUser.class);
 ConstructorConverter converter = new ConstructorConverterBuilder(AnnotatedUser.class).build();
 xstream.registerConverter(converter);
 </pre></div>
-
-
 <!-- ...................................................... -->
 <h2 id="Summary">Using Paramaner to infer name constructor parameters</h2>
 <p>
@@ -144,13 +148,14 @@ Consider the following xml file, similar to the previous example:
 <div class="Source Java"><pre>
 &lt;user&gt;
     &lt;id&gt;1&lt;/id&gt;
-    &lt;name&gt;Francisco Sokol&lt;/user-name&gt;
+    &lt;name&gt;Francisco Sokol&lt;/name&gt;
     &lt;age&gt;51&lt;/age&gt;
 &lt;/user&gt;
 </pre></div>
 <p>
-<p>
 By using Paranamer, you can omit the parameter of the @UseThis annotation and the converter will use parameters names to find out which cells from the xml to use.
+</p>
+<p>
 So you only need to annotate the constructor, like this: 
 </p>
 <div class="Source Java"><pre>
@@ -165,6 +170,7 @@ public class ParanamerUser {
     }
 }
 </pre></div>
+<p>NOTE: While using paranamer, the name of the xml nodes <strong>must be</strong> the same as the name of the parameters </p>
 <p>
 Now, with Paranamer jar in the claspath, you can build the converter:
 </p>
