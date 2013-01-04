@@ -524,5 +524,67 @@ a Java class and not mixed with your model, its up to you to pick the best appro
 direct method calls to the XStream instance.  Annotations do not provide more functionality, but may improve
 convenience.</p>
 
+<!-- ...................................................... -->
+<h2 id="Summary">Using annotations</h2>
+<p>
+It is possible to use the converter by annotating the constructor you wnat to XStream use when unmarshal the xml data. To do this, simply annotate
+the desired constructor with @UseThis annotation.
+</p>
+<p>
+Consider the following xml file:
+</p>
+<div class="Source Java"><pre><user>
+    <id>1</id>
+    <user-name>Francisco Sokol</user-name>
+    <user-age>51</user-age>
+</user></pre></div>
+<p>
+And you need to map that xml to the following class:
+</p>
+<div class="Source Java"><pre>
+    public class AnnotatedUser {
+        private final String name;
+        private final int age;
+        
+        @UseThis({"user-name", "user-age"})
+        protected AnnotatedUser(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+    }
+</pre></div>
+<p>
+By annotating the constructor with <em>@UseThis({"user-name", "user-age"})</em>, the converter will use that constructor and map the cell named <em>user-name</em> 
+from the xml to the <em>name</em> parameter of the constructor and <em>user-age</em> to <em>age</em>.
+</p>
+<p>
+And to build the converter simply do:
+</p>
+
+<div class="Source Java"><pre>
+xstream.alias("user", AnnotatedUser.class);
+ConstructorConverter converter = new ConstructorConverterBuilder(AnnotatedUser.class).build();
+xstream.registerConverter(converter);
+</pre></div>
+
+
+<!-- ...................................................... -->
+<h2 id="Summary">Using Paramaner to infer name constructor parameters</h2>
+<p>
+If you have <a href="http://paranamer.codehaus.org/">Paranamer</a> added in the classpath of your project, the ConstructorConverter may use it to discover the parameter names of the annotated constructor and use those names to map them to the xml cells.
+</p>
+<p>
+Consider the following xml file, similar to the previous example:
+</p>
+<div class="Source Java"><pre><user>
+    <id>1</id>
+    <name>Francisco Sokol</user-name>
+    <age>51</age>
+</user></pre></div>
+<p>
+<p>
+By using Paranamer, you can 
+</p>
+
   </body>
 </html>
