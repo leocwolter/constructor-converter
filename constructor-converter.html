@@ -17,14 +17,13 @@
 
 <!-- ...................................................... -->
 <h2 id="Motivation">Motivation</h2>
-<p>Sometimes you need do gather only a few informations from the xml file, which is very extense, and ignore the ones that you do not need</p>
-<p>The xStream have a ConstructorConverter class that makes possible to inform the nodes that you want to gather and inject them into your class's CONSTRUCTOR</p>
-<p>This tutorial will show you how to use that feature to do it easily using a very succint and fluent syntax.</p>
-<p>There are three ways for doing this operation, which will be explained bellow</p>
+<p>Sometimes you need only a few pieces of information fom a lengthy XML file.</p>
+<p>Using ConstructorConverter, you inform the nodes that you want to use and inject them into your class's CONSTRUCTOR.</p>
+<p>This tutorial will show you how to use that feature to do it easily with a very succint and fluent syntax.</p>
+<p>There are three ways for doing this operation, which will be explained bellow.</p>
 <!-- ...................................................... -->
 <h2 id="ProgramaticWay">The Programatic Way</h2>
-<p>The first way to be explained will be the programatic way:</p>
-<p>Suppose that you have the following xml/classes and want to get all the informations but the <code>useless</code> one</p>
+<p>Suppose that you have the following xml/classes and want to get all the information but the <code>useless</code> node:</p>
 <div class="Source Java"><pre>
 	&lt;order&gt;
 		&lt;products&gt;
@@ -53,15 +52,15 @@
 
 	public static class Product {
 		private final String name;
-\
+
 		protected Product(String name) {
 			this.name = name;
 		}
 	}
 </pre></div>
 
-<p>Now, to make a constructor converter we need to use the class ConstructorConverterBuilder informing the constructor that it'll use and the aliases to each xml nodes wanted <strong>IN THE SAME ORDER THAT YOUR CONSTRUCTOR'S PARAMETERS</strong></p>
-<p>The method build() will return a new Converter:</p>
+<p>Now, to build a constructor converter we need to use the class ConstructorConverterBuilder and inform which constructor it will use and the aliases to each xml nodes wanted <strong>IN THE SAME ORDER THAT YOUR CONSTRUCTOR'S PARAMETERS</strong>.</p>
+<p>The method <code>build()</code> will return a new Converter:</p>
 <div class="Source Java"><pre>
 
         Converter orderConverter = new ConstructorConverterBuilder(Order.class)
