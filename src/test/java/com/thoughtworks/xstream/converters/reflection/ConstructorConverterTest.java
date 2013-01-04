@@ -73,9 +73,9 @@ public class ConstructorConverterTest extends TestCase {
     public static class AnnotatedUser {
         private final String name;
         
-        @UseThis({"name"})
-        protected AnnotatedUser(String name) {
-            this.name = name;
+        @UseThis({"first-name","last-name"})
+        protected AnnotatedUser(String firstName, String lastName) {
+            this.name = firstName + " "+ lastName;
         }
     }
     
@@ -144,7 +144,7 @@ public class ConstructorConverterTest extends TestCase {
     public void testShouldUseAnnotatedConstructor() {
         ConstructorConverter converter = new ConstructorConverterBuilder(AnnotatedUser.class).build();
         xStream.registerConverter(converter);
-        String xml = "<annotateduser><name>user name</name></annotateduser>";
+        String xml = "<annotateduser><first-name>user</first-name><last-name>name</last-name></annotateduser>";
         AnnotatedUser user = (AnnotatedUser) xStream.fromXML(xml);
         assertEquals("user name", user.name);
     }
