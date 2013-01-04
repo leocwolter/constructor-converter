@@ -24,7 +24,7 @@
 <!-- ...................................................... -->
 <h2 id="ProgramaticWay">The Programatic Way</h2>
 <p>The first way to be explained will be the programatic way:</p>
-<p>Suppose that you have the following xml/classes and want to get all the informations but the <code>useless</code> one</p>
+<p>Suppose that you have the following xml:</p>
 <div class="Source Java"><pre>
 	&lt;order&gt;
 		&lt;products&gt;
@@ -39,6 +39,7 @@
 		&lt;useless&gt;something&lt;/useless&gt;
 	&lt;/order&gt;
 </pre></div>
+<p>And you need to map that xml to the following classes ignoring the <code>useless</code> xml node</p>
 <div class="Source Java"><pre>
 	 private static class Order {
 
@@ -560,7 +561,7 @@ convenience.</p>
 <!-- ...................................................... -->
 <h2 id="Summary">Using annotations</h2>
 <p>
-It is possible to use the converter by annotating the constructor you wnat to XStream use when unmarshal the xml data. To do this, simply annotate
+It is possible to use the converter by annotating the constructor you want to XStream use when unmarshal the xml data. To do this, simply annotate
 the desired constructor with @UseThis annotation.
 </p>
 <p>
@@ -589,11 +590,14 @@ public class AnnotatedUser {
 }
 </pre></div>
 <p>
-By annotating the constructor with <em>@UseThis({"user-name", "user-age"})</em>, the converter will use that constructor and map the cell named <em>user-name</em> 
+	By annotating the constructor with <em>@UseThis({"user-name", "user-age"})</em>, the converter will use that constructor and map the cell named <em>user-name</em> 
 from the xml to the <em>name</em> parameter of the constructor and <em>user-age</em> to <em>age</em>.
 </p>
 <p>
-And to build the converter simply do:
+	The order of the annotation's parameters must be the same a the constructor's parameters. If you change the order of the annotation's parameters to @UseThis({"user-age","user-name"}) it won't work as expected.
+</p>
+<p>
+	And to build the converter simply do:
 </p>
 
 <div class="Source Java"><pre>
