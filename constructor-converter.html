@@ -62,13 +62,8 @@
 	}
 </pre></div>
 
-<<<<<<< HEAD
-<p>Now, to build a constructor converter we need to use the class ConstructorConverterBuilder and inform which constructor it will use and the aliases to each xml nodes wanted <strong>IN THE SAME ORDER THAT YOUR CONSTRUCTOR'S PARAMETERS</strong>.</p>
+<p>Now, to build a constructor converter we need to use the class ConstructorConverterBuilder and inform which constructor it will use and the aliases to each xml nodes wanted <strong>in the same order as the parameters of your constructor</strong>.</p>
 <p>The method <code>build()</code> will return a new Converter:</p>
-=======
-<p>Now, to make a constructor converter we need to use the class ConstructorConverterBuilder informing the constructor that it'll use and the aliases to each xml nodes wanted <strong>in the same order as the parameters of your constructor</strong></p>
-<p>The method build() will return a new Converter:</p>
->>>>>>> other details
 <div class="Source Java"><pre>
 
         Converter orderConverter = new ConstructorConverterBuilder(Order.class)
