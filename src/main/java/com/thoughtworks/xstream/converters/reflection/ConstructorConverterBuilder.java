@@ -41,8 +41,8 @@ public class ConstructorConverterBuilder {
     public ConstructorConverterBuilder(Class<?> type) {
         List<Constructor<?>> constructors = Arrays.asList(type.getDeclaredConstructors());
         for (Constructor<?> constructor : constructors) {
-            if (constructor.isAnnotationPresent(UseThis.class)) {
-                UseThis annotation = constructor.getAnnotation(UseThis.class);
+            if (constructor.isAnnotationPresent(UnmarshallingConstructor.class)) {
+                UnmarshallingConstructor annotation = constructor.getAnnotation(UnmarshallingConstructor.class);
                 names = annotation.value();
                 declaredConstructor = constructor;
             }
@@ -86,7 +86,7 @@ public class ConstructorConverterBuilder {
     public ConstructorConverterBuilder withParanamer() {
         List<Constructor<?>> constructors = Arrays.asList(type.getDeclaredConstructors());
         for (Constructor<?> constructor : constructors) {
-            if (constructor.isAnnotationPresent(UseThis.class)) {
+            if (constructor.isAnnotationPresent(UnmarshallingConstructor.class)) {
                 try {
                     Class<?> paranamerClass = Class.forName("com.thoughtworks.xstream.converters.reflection.ParanamerParser");
                     Method paramsFor = paranamerClass.getMethod("paramsFor", Constructor.class);

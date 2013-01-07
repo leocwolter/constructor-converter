@@ -83,7 +83,7 @@ public class ConstructorConverterTest extends TestCase {
     public static class AnnotatedUser {
         private final String name;
         
-        @UseThis({"first-name","last-name"})
+        @UnmarshallingConstructor({"first-name","last-name"})
         protected AnnotatedUser(String firstName, String lastName) {
             this.name = firstName + " "+ lastName;
         }
@@ -92,7 +92,7 @@ public class ConstructorConverterTest extends TestCase {
     public static class ParanamerUser {
         private final String name;
         
-        @UseThis
+        @UnmarshallingConstructor
         protected ParanamerUser(String strangeArgName) {
             this.name = strangeArgName;
         }
