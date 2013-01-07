@@ -1,31 +1,73 @@
 <html>
 <!--
  Copyright (C) 2006 Joe Walnes.
- Copyright (C) 2006, 2007, 2011 XStream committers.
+ Copyright (C) 2006, 2007, 2011, 2013 XStream committers.
  All rights reserved.
  
  The software in this package is published under the terms of the BSD
  style license a copy of which has been included with this distribution in
  the LICENSE.txt file.
  
- Created on 04. January 2013 by Chico Sokol & Leonardo Wolter
+ Created on 04. January 2013 by Chico Sokol & Leonardo Wolter & Guilherme Silveira
  -->
   <head>
 	<title>Constructor Converter Tutorial</title>
   </head>
   <body>
-
+<div id="content">
 <!-- ...................................................... -->
 <h2 id="Motivation">Motivation</h2>
 
-<p>Sometimes you need only a few pieces of information fom a lengthy XML file.</p>
+<p>Sometimes you need only a few pieces of information from a lengthy XML file.</p>
+<p>Or sometimes you want to invoke a constructor instead of the setters or setting the value magically.</p>
 <p>Using ConstructorConverter, you inform the nodes that you want to use and inject them into your class's CONSTRUCTOR.</p>
 <p>This tutorial will show you how to use that feature to do it easily with a very succint and fluent syntax.</p>
 <p>There are three ways for doing this operation, which will be explained bellow.</p>
 
 <!-- ...................................................... -->
-<h2 id="ProgramaticWay">The Programatic Way</h2>
+<h2 id="ProgrammaticWay">The Programmatic Way</h2>
+
 <p>Suppose that you have the following xml:</p>
+
+<div class="Source Java"><pre>
+	&lt;order&gt;
+		&lt;buyer&gt;buyer name&lt;/buyer&gt;
+	&lt;/order&gt;
+</pre></div>
+
+<p>And you need to map that xml to the following class</p>
+<div class="Source Java"><pre>
+	 private static class Order {
+
+		private final String buyer;
+
+		protected Order(String buyer) {
+			this.buyer = buyer;
+		}
+	}
+
+</pre></div>
+
+<p>You do not want to create a setter because the buyer can not be changed. And you do not want the field to not be final since it must be set during construction - the basis for a Good Citizen. How can we map XStream to use this constructor instead of changing our code around so it can match XStream's defaults? We can do that using the ConstructorConverter.</p>
+
+<p>To build a constructor converter we need to use the class ConstructorConverterBuilder and inform which constructor it will use and the aliases to each xml nodes wanted <strong>in the same order as the parameters of your constructor</strong>.</p>
+<p>The method <code>build()</code> will return a new Converter:</p>
+<div class="Source Java"><pre>
+        ConstructorConverter orderConverter = new ConstructorConverterBuilder(Order.class)
+            .withConstructor(String.class)
+            .withAliases("buyer")
+            .build();
+</pre></div>
+<p>Note: while using this way, all the three method calls cited above are necessary</p>
+<p>All that you need to do now is to register these converters and call the xStream.fromXML(xml) method normally:</p>
+<div class="Source Java"><pre>
+	   	xStream.registerConverter(orderConverter);
+        Order order = (Order) xStream.fromXML(xml);
+</pre></div>
+<p>The result will be an instance of Order with all the xml information that were necessary</p>
+
+<p>We can do it using Lists and ignoring fields too. Consider the xml bellow:</p>
+
 <div class="Source Java"><pre>
 	&lt;order&gt;
 		&lt;products&gt;
@@ -61,14 +103,13 @@
 		}
 	}
 </pre></div>
-
 <p>Now, to build a constructor converter we need to use the class ConstructorConverterBuilder and inform which constructor it will use and the aliases to each xml nodes wanted <strong>in the same order as the parameters of your constructor</strong>.</p>
 <p>The method <code>build()</code> will return a new Converter:</p>
 <div class="Source Java"><pre>
 
         ConstructorConverter orderConverter = new ConstructorConverterBuilder(Order.class)
-            .withConstructor(String.class, List.class, String.class)
-            .withAliases("id", "products", "buyer")
+            .withConstructor(List.class, String.class)
+            .withAliases("products", "buyer")
             .build();
             
         ConstructorConverter productConverter = new ConstructorConverterBuilder(Product.class)
@@ -77,18 +118,19 @@
             .build();
 
 </pre></div>
-<p>Note: while using this way, all the three method calls cited above are necessary</p>
-<p>All that you need to do now is to register these converters and call the xStream.fromXML(xml) method normally:</p>
+<p>Now you have two converters, just register them and call the xStream.fromXML() method:</p>
 <div class="Source Java"><pre>
-	   	xStream.registerConverter(orderConverter);
-        xStream.registerConverter(productConverter);
-        Order order = (Order) xStream.fromXML(xml);
+	xStream.registerConverter(orderConverter);
+	xStream.registerConverter(productConverter);
+	Order order = (Order) xStream.fromXML(xml);
 </pre></div>
+<p>NOTE: If you have a list of classes that are supported by xStream natively, you do not need two converters.</p>
 <p>The result will be an instance of Order with all the xml information that were necessary</p>
+
 <!-- ...................................................... -->
 <h2 id="AnnotationsWay">Using annotations</h2>
 <p>
-It is possible to use the converter by annotating the constructor you want to XStream use when unmarshal the xml data. To do this, simply annotate the desired constructor with @UseThis annotation.
+It is possible to use the converter by annotating the constructor you want XStream to use when unmarshalling the xml data. To do this, simply annotate the desired constructor with @UseThis annotation.
 </p>
 <p>
 Consider the following xml file:
@@ -178,6 +220,7 @@ xstream.registerConverter(converter);
 <p>
 The ConstructorConverter does not support the marshall(toXML) opperation and will throw UnsupportedOperationException if the method is called.</p>
 </p>
+</div>
 </body>
 
 <style>
