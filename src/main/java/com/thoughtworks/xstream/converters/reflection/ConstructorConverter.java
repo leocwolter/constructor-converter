@@ -1,3 +1,13 @@
+/*
+ * Copyright (C) 2006, 2007, 2008, 2009 XStream Committers.
+ * All rights reserved.
+ *
+ * The software in this package is published under the terms of the BSD
+ * style license a copy of which has been included with this distribution in
+ * the LICENSE.txt file.
+ * 
+ * Created on 07. January 2013 by Leonardo Wolter & Francisco Sokol & Guilherme Silveira
+ */
 package com.thoughtworks.xstream.converters.reflection;
 
 import java.lang.reflect.Constructor;
@@ -12,6 +22,19 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+/**
+ * <p>ConstructorConverter which can use 3 different strategies to unmarshall fields
+ * <ul>
+ * <li> Declaring the constructor to be used and the xml' nodes aliases</li>
+ * <li> Annotating the constructor and declaring the xml' nodes aliases in that annotation</li>
+ * <li> Annotating the constructor and using Paranamer to imply the xml' nodes aliases</li>
+ * </ul>
+ * </p>
+ * <p>ConstructorConverter does not support the marshall opperation</p>
+ * @author Leonardo Wolter
+ * @author Francisco Sokol
+ * @author Guilherme Silveira
+ */
 public class ConstructorConverter implements Converter {
 
     private final Class<?> type;
