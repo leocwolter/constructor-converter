@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.thoughtworks.xstream.XStreamException;
-import com.thoughtworks.xstream.annotation.UnmarshallingConstructor;
+import com.thoughtworks.xstream.annotation.XStreamUnmarshalling;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -113,8 +113,8 @@ public class ConstructorConverter implements Converter {
         private ConstructorConverterBuilder(Class<?> type) {
             List<Constructor<?>> constructors = Arrays.asList(type.getDeclaredConstructors());
             for (Constructor<?> constructor : constructors) {
-                if (constructor.isAnnotationPresent(UnmarshallingConstructor.class)) {
-                    UnmarshallingConstructor annotation = constructor.getAnnotation(UnmarshallingConstructor.class);
+                if (constructor.isAnnotationPresent(XStreamUnmarshalling.class)) {
+                    XStreamUnmarshalling annotation = constructor.getAnnotation(XStreamUnmarshalling.class);
                     names = annotation.value();
                     declaredConstructor = constructor;
                 }
@@ -158,9 +158,9 @@ public class ConstructorConverter implements Converter {
         public ConstructorConverterBuilder withParanamer() {
             List<Constructor<?>> constructors = Arrays.asList(type.getDeclaredConstructors());
             for (Constructor<?> constructor : constructors) {
-                if (constructor.isAnnotationPresent(UnmarshallingConstructor.class)) {
+                if (constructor.isAnnotationPresent(XStreamUnmarshalling.class)) {
                     try {
-                        Class<?> paranamerClass = Class.forName("com.thoughtworks.xstream.converters.reflection.ParanamerParser");
+                        Class<?> paranamerClass = Class.forName("com.thoughtworks.xstream.core.util.ParanamerParser");
                         Method paramsFor = paranamerClass.getMethod("paramsFor", Constructor.class);
     					names = (String[]) paramsFor.invoke(paranamerClass.newInstance(), constructor);
     					declaredConstructor = constructor;

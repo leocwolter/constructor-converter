@@ -17,7 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.annotation.UnmarshallingConstructor;
+import com.thoughtworks.xstream.annotation.XStreamUnmarshalling;
 import com.thoughtworks.xstream.converters.Converter;
 
 public class ConstructorConverterTest extends TestCase {
@@ -84,7 +84,7 @@ public class ConstructorConverterTest extends TestCase {
     public static class AnnotatedUser {
         private final String name;
         
-        @UnmarshallingConstructor({"first-name","last-name"})
+        @XStreamUnmarshalling({"first-name","last-name"})
         protected AnnotatedUser(String firstName, String lastName) {
             this.name = firstName + " "+ lastName;
         }
@@ -93,7 +93,7 @@ public class ConstructorConverterTest extends TestCase {
     public static class ParanamerUser {
         private final String name;
         
-        @UnmarshallingConstructor
+        @XStreamUnmarshalling
         protected ParanamerUser(String strangeArgName) {
             this.name = strangeArgName;
         }
