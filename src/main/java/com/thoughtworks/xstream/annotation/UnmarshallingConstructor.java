@@ -8,7 +8,7 @@
  * 
  * Created on 07. January 2013 by Leonardo Wolter & Francisco Sokol & Guilherme Silveira
  */
-package com.thoughtworks.xstream.converters.reflection;
+package com.thoughtworks.xstream.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

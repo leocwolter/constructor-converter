@@ -17,6 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotation.UnmarshallingConstructor;
 import com.thoughtworks.xstream.converters.Converter;
 
 public class ConstructorConverterTest extends TestCase {
