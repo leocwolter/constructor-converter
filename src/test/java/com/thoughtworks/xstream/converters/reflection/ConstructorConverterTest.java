@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007, 2008, 2009, 2013 XStream Committers.
+ * Copyright (C) 2013 XStream Committers.
  * All rights reserved.
  *
  * The software in this package is published under the terms of the BSD
@@ -109,7 +109,7 @@ public class ConstructorConverterTest extends TestCase {
     }
     
     public void testShouldBuildOrderWithIdOnlyTest() {
-        Converter converter = new ConstructorConverterBuilder(Order.class)
+        Converter converter = ConstructorConverter.forType(Order.class)
             .withConstructor(String.class)
             .withAliases("id").build();
         xStream.registerConverter(converter);
@@ -118,7 +118,7 @@ public class ConstructorConverterTest extends TestCase {
     }
     
     public void testShouldBuildCalendar() {
-        Converter converter = new ConstructorConverterBuilder(Order.class)
+        Converter converter = ConstructorConverter.forType(Order.class)
             .withConstructor(Calendar.class)
             .withAliases("date").build();
         xStream.registerConverter(converter);
@@ -133,7 +133,7 @@ public class ConstructorConverterTest extends TestCase {
     }
     
     public void testShouldBuildCalendarIgnoringFirstDate() {
-        Converter converter = new ConstructorConverterBuilder(Order.class)
+        Converter converter = ConstructorConverter.forType(Order.class)
             .withConstructor(Calendar.class)
             .withAliases("date2").build();
         xStream.registerConverter(converter);
@@ -152,7 +152,7 @@ public class ConstructorConverterTest extends TestCase {
     }
     
     public void testShouldUseAnnotatedConstructor() {
-        ConstructorConverter converter = new ConstructorConverterBuilder(AnnotatedUser.class).build();
+        ConstructorConverter converter = ConstructorConverter.forType(AnnotatedUser.class).build();
         xStream.registerConverter(converter);
         String xml = "<annotateduser><first-name>user</first-name><last-name>name</last-name></annotateduser>";
         AnnotatedUser user = (AnnotatedUser) xStream.fromXML(xml);
@@ -160,7 +160,7 @@ public class ConstructorConverterTest extends TestCase {
     }
     
     public void testShouldUseParanamerToDiscoverParameters() {
-        ConstructorConverter converter = new ConstructorConverterBuilder(ParanamerUser.class).withParanamer().build();
+        ConstructorConverter converter = ConstructorConverter.forType(ParanamerUser.class).withParanamer().build();
         xStream.registerConverter(converter);
         String xml = "<paranameruser><strangeArgName>with paranamer</strangeArgName></paranameruser>";
         ParanamerUser user = (ParanamerUser) xStream.fromXML(xml);
@@ -168,12 +168,12 @@ public class ConstructorConverterTest extends TestCase {
     }
     
     public void testShouldBuildOrderWithAllSpecifiedParameters() {
-        Converter orderConverter = new ConstructorConverterBuilder(Order.class)
+        Converter orderConverter = ConstructorConverter.forType(Order.class)
             .withConstructor(String.class, List.class, Calendar.class, String.class)
             .withAliases("id", "products", "date", "buyer")
             .build();
             
-        Converter productConverter = new ConstructorConverterBuilder(Product.class)
+        Converter productConverter = ConstructorConverter.forType(Product.class)
             .withConstructor(String.class)
             .withAliases("name")
             .build();
@@ -206,7 +206,7 @@ public class ConstructorConverterTest extends TestCase {
     }
 
     public void testShouldNotMarshall() {
-        Converter converter = new ConstructorConverterBuilder(User.class)
+        Converter converter = ConstructorConverter.forType(User.class)
             .withConstructor(String.class)
             .withAliases("name").build();
         
@@ -223,7 +223,7 @@ public class ConstructorConverterTest extends TestCase {
     public void testShouldMarshallWithProvidedConverter() {
         Converter reflectionConverter = xStream.getConverterLookup().lookupConverterForType(Order.class);
         
-        Converter converter = new ConstructorConverterBuilder(User.class)
+        Converter converter = ConstructorConverter.forType(User.class)
             .withConstructor(String.class)
             .withMarshaller(reflectionConverter)
             .withAliases("name").build();
