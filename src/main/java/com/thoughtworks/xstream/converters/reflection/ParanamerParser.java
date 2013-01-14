@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006, 2007, 2008, 2009, 2013 XStream Committers.
+ * Copyright (C) 2013 XStream Committers.
  * All rights reserved.
  *
  * The software in this package is published under the terms of the BSD
@@ -26,7 +26,8 @@ import com.thoughtworks.paranamer.Paranamer;
  */
 public class ParanamerParser {
     
-    public String[] paramsFor(Constructor c) {
+    @SuppressWarnings("rawtypes")
+	public String[] paramsFor(Constructor c) {
         Paranamer paranamer = new CachingParanamer(new AdaptiveParanamer());
         return paranamer.lookupParameterNames(c, true);
     }
