@@ -8,7 +8,7 @@
  * 
  * Created on 07. January 2013 by Leonardo Wolter & Francisco Sokol & Guilherme Silveira
  */
-package com.thoughtworks.xstream.converters.reflection;
+package com.thoughtworks.xstream.core.util;
 
 import java.lang.reflect.Constructor;
 
