@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.CONSTRUCTOR)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UnmarshallingConstructor {
+public @interface XStreamUnmarshalling {
 
     String[] value() default {};
 
