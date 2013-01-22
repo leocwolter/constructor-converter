@@ -222,7 +222,7 @@ public class ConstructorConverterTest extends TestCase {
     }
     
     public void testShouldMarshallWithProvidedConverter() {
-        Converter reflectionConverter = xStream.getConverterLookup().lookupConverterForType(Order.class);
+        Converter reflectionConverter = xStream.getConverterLookup().lookupConverterForType(User.class);
         
         Converter converter = ConstructorConverter.forType(User.class)
             .withConstructor(String.class)
