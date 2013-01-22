@@ -49,10 +49,10 @@
 
 <p>You do not want to create a setter because the buyer can not be changed. And you do not want the field to not be final since it must be set during construction - the basis for a Good Citizen. How can we map XStream to use this constructor instead of changing our code around so it can match XStream's defaults? We can do that using the ConstructorConverter.</p>
 
-<p>To build a constructor converter we need to use the class ConstructorConverterBuilder and inform which constructor it will use and the aliases to each xml nodes wanted <strong>in the same order as the parameters of your constructor</strong>.</p>
+<p>To build a constructor converter we need to use the class ConstructorConverter and inform which constructor it will use and the aliases to each xml nodes wanted <strong>in the same order as the parameters of your constructor</strong>.</p>
 <p>The method <code>build()</code> will return a new Converter:</p>
 <div class="Source Java"><pre>
-        ConstructorConverter orderConverter = new ConstructorConverterBuilder(Order.class)
+        Converter orderConverter = ConstructorConverter.forType(Order.class)
             .withConstructor(String.class)
             .withAliases("buyer")
             .build();
@@ -102,16 +102,16 @@
 		}
 	}
 </pre></div>
-<p>Now, to build a constructor converter we need to use the class ConstructorConverterBuilder and inform which constructor it will use and the aliases to each xml nodes wanted <strong>in the same order as the parameters of your constructor</strong>.</p>
-<p>The method <code>build()</code> will return a new Converter:</p>
+<p>It's also possible to call constructors with more complex types such as lists. The following example shows how to do that:</p>
 <div class="Source Java"><pre>
 
-        ConstructorConverter orderConverter = new ConstructorConverterBuilder(Order.class)
+        ConstructorConverter orderConverter = ConstructorConverter.forType(Order.class)
             .withConstructor(List.class, String.class)
             .withAliases("products", "buyer")
             .build();
+
             
-        ConstructorConverter productConverter = new ConstructorConverterBuilder(Product.class)
+        ConstructorConverter productConverter = ConstructorConverter.forType(Product.class)
             .withConstructor(String.class)
             .withAliases("name")
             .build();
@@ -129,7 +129,7 @@
 <!-- ...................................................... -->
 <h2 id="AnnotationsWay">Using annotations</h2>
 <p>
-It is possible to use the converter by annotating the constructor you want XStream to use when unmarshalling the xml data. To do this, simply annotate the desired constructor with @UseThis annotation.
+It is possible to use the converter by annotating the constructor you want XStream to use when unmarshalling the xml data. To do this, simply annotate the desired constructor with @XStreamUnmarshalling annotation.
 </p>
 <p>
 Consider the following xml file:
@@ -149,7 +149,7 @@ public class AnnotatedUser {
     private final String name;
     private final int age;
     
-    @UseThis({"user-name", "user-age"})
+    @XStreamUnmarshalling({"user-name", "user-age"})
     protected AnnotatedUser(String name, int age) {
         this.name = name;
         this.age = age;
@@ -157,11 +157,11 @@ public class AnnotatedUser {
 }
 </pre></div>
 <p>
-	By annotating the constructor with <em>@UseThis({"user-name", "user-age"})</em>, the converter will use that constructor and map the cell named <em>user-name</em> 
+	By annotating the constructor with <em>@XStreamUnmarshalling({"user-name", "user-age"})</em>, the converter will use that constructor and map the cell named <em>user-name</em> 
 from the xml to the <em>name</em> parameter of the constructor and <em>user-age</em> to <em>age</em>.
 </p>
 <p>
-	The order of the annotation's parameters must be the same a the constructor's parameters. If you change the order of the annotation's parameters to @UseThis({"user-age","user-name"}) it won't work as expected.
+	The order of the annotation's parameters must be the same a the constructor's parameters. If you change the order of the annotation's parameters to @XStreamUnmarshalling({"user-age","user-name"}) it won't work as expected.
 </p>
 <p>
 	And to build the converter simply do:
@@ -169,7 +169,7 @@ from the xml to the <em>name</em> parameter of the constructor and <em>user-age<
 0
 <div class="Source Java"><pre>
 xstream.alias("user", AnnotatedUser.class);
-ConstructorConverter converter = new ConstructorConverterBuilder(AnnotatedUser.class).build();
+ConstructorConverter converter = ConstructorConverter.forType(AnnotatedUser.class).build();
 xstream.registerConverter(converter);
 </pre></div>
 <!-- ...................................................... -->
@@ -188,7 +188,7 @@ Consider the following xml file, similar to the previous example:
 &lt;/user&gt;
 </pre></div>
 <p>
-By using Paranamer, you can omit the parameter of the @UseThis annotation and the converter will use parameters names to find out which cells from the xml to use.
+By using Paranamer, you can omit the parameter of the @XStreamUnmarshalling annotation and the converter will use parameters names to find out which cells from the xml to use.
 </p>
 <p>
 So you only need to annotate the constructor, like this: 
@@ -198,7 +198,7 @@ public class ParanamerUser {
     private final String name;
     private final int age;
     
-    @UseThis
+    @XStreamUnmarshalling
     protected ParanamerUser(String name, int age) {
         this.name = name;
         this.age = age;
@@ -210,7 +210,7 @@ public class ParanamerUser {
 Now, with Paranamer jar in the claspath, you can build the converter:
 <div class="Source Java"><pre>
 xstream.alias("user", ParanamerUser.class);
-ConstructorConverter converter = new ConstructorConverterBuilder(ParanamerUser.class).withParanamer().build();
+ConstructorConverter converter = ConstructorConverter.forType(ParanamerUser.class).withParanamer().build();
 xstream.registerConverter(converter);
 </pre></div>
 </p>
@@ -219,5 +219,16 @@ xstream.registerConverter(converter);
 <p>
 The ConstructorConverter does not support the marshall(toXML) opperation and will throw UnsupportedOperationException if the method is called.</p>
 </p>
+<p>
+If you want to, it's possible to call the .withMarshaller() method to specify which converter it will use to perform this operation:
+</p>
+<div class="Source Java"><pre>
+    Converter marshallConverter = ...
+    Converter myConverter = ConstructorConverter.forType(Order.class)
+        .withConstructor(String.class)
+        .withMarshaller(marshallConverter)
+        .withAliases("name").build();
+	xstream.registerConverter(myConverter);
+</pre></div>
 </body>
 </html>
