@@ -11,16 +11,21 @@
 package com.thoughtworks.xstream.converters.reflection;
 
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.fail;
+
 import java.util.Calendar;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotation.XStreamUnmarshalling;
 import com.thoughtworks.xstream.converters.Converter;
 
-public class ConstructorConverterTest extends TestCase {
+public class ConstructorConverterTest{
 
     @SuppressWarnings("unused")
     private List<Product> products;
@@ -99,7 +104,7 @@ public class ConstructorConverterTest extends TestCase {
         }
     }
     
-    @Override
+    @Before
     public void setUp() {
         xStream = new XStream();
         xStream.alias("order", Order.class);
@@ -109,6 +114,7 @@ public class ConstructorConverterTest extends TestCase {
         xStream.alias("paranameruser", ParanamerUser.class);
     }
     
+    @Test
     public void testShouldBuildOrderWithIdOnlyTest() {
         Converter converter = ConstructorConverter.forType(Order.class)
             .withConstructor(String.class)
@@ -118,6 +124,7 @@ public class ConstructorConverterTest extends TestCase {
         assertEquals("666", order.id);
     }
     
+    @Test
     public void testShouldBuildCalendar() {
         Converter converter = ConstructorConverter.forType(Order.class)
             .withConstructor(Calendar.class)
@@ -133,6 +140,7 @@ public class ConstructorConverterTest extends TestCase {
         assertEquals(1352913901530l, order.date.getTimeInMillis());
     }
     
+    @Test
     public void testShouldBuildCalendarIgnoringFirstDate() {
         Converter converter = ConstructorConverter.forType(Order.class)
             .withConstructor(Calendar.class)
@@ -152,6 +160,7 @@ public class ConstructorConverterTest extends TestCase {
         assertEquals(1352913901531l, order.date.getTimeInMillis());
     }
     
+    @Test
     public void testShouldUseAnnotatedConstructor() {
         ConstructorConverter converter = ConstructorConverter.forType(AnnotatedUser.class).build();
         xStream.registerConverter(converter);
@@ -160,6 +169,7 @@ public class ConstructorConverterTest extends TestCase {
         assertEquals("user name", user.name);
     }
     
+    @Test
     public void testShouldUseParanamerToDiscoverParameters() {
         ConstructorConverter converter = ConstructorConverter.forType(ParanamerUser.class).withParanamer().build();
         xStream.registerConverter(converter);
@@ -168,6 +178,7 @@ public class ConstructorConverterTest extends TestCase {
         assertEquals("with paranamer", user.name);
     }
     
+    @Test
     public void testShouldBuildOrderWithAllSpecifiedParameters() {
         Converter orderConverter = ConstructorConverter.forType(Order.class)
             .withConstructor(String.class, List.class, Calendar.class, String.class)
@@ -206,6 +217,7 @@ public class ConstructorConverterTest extends TestCase {
         assertEquals("buyer name", order.buyer);
     }
 
+    @Test
     public void testShouldNotMarshall() {
         Converter converter = ConstructorConverter.forType(User.class)
             .withConstructor(String.class)
@@ -221,6 +233,7 @@ public class ConstructorConverterTest extends TestCase {
         }
     }
     
+    @Test
     public void testShouldMarshallWithProvidedConverter() {
         Converter reflectionConverter = xStream.getConverterLookup().lookupConverterForType(User.class);
         

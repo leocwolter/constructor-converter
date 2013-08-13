@@ -10,11 +10,13 @@
  */
 package com.thoughtworks.xstream.core.util;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.lang.reflect.Constructor;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ParanamerParserTest extends TestCase {
+public class ParanamerParserTest{
     
     @SuppressWarnings("unused")
     private static class SampleClass {
@@ -22,6 +24,7 @@ public class ParanamerParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testShouldFindParameters() throws Exception {
         Constructor<?> c = SampleClass.class.getDeclaredConstructors()[0];
         String[] paramsFor = new ParanamerParser().paramsFor(c);
